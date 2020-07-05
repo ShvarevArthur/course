@@ -86,7 +86,7 @@ tmax=900
 x_start=0
 Vx_start=0
 y_start=Re
-Vy_start=0.1
+Vy_start=Re*465
 #Vz_start=0
 #z_start=0
 
@@ -122,7 +122,7 @@ plt.show()
 
 print('Высота =',H, 'Vx =', Vx, 'Vy =', Vy)
 print('Время =',ts[-1])
-print('Топливо =',Ship_fuelMass, 'Отделилась 3ая ступень')
+print('Топливо =',Ship_fuelMass)
 
 
 
@@ -158,9 +158,45 @@ plt.show()
 
 print('Высота =',H, 'Vx =', Vx, 'Vy =', Vy)
 print('Время =',ts[-1])
-print('Топливо =',Ship_fuelMass, 'Отделилась 3ая ступень')
+print('Топливо =',Ship_fuelMass)
+
+xc,yc=[],[]
+for i in range(0, 630):
+    xc.append(Re*m.cos(i/100))
+    yc.append(Re*m.sin(i/100))
+
+y0,t0=[Y[-1:,0],Y[-1:,1],Y[-1:,2],Y[-1:,3]], 0
+ODE=ode(f)
+ODE.set_integrator('dopri5')
+ODE.set_solout(fout)
+ts, ys = [ ],[ ]
+ODE.set_initial_value(y0, t0) 
+ODE.integrate(tmax)      
+Y=np.array(ys)
+
+H=m.sqrt(Y[-1:,0]*Y[-1:,0] +Y[-1:,2]*Y[-1:,2])-Re
+Vx=Y[-1:,1]
+Vy=Y[-1:,3]
+Ship_fuelMass-=Ship_Force/Ship_Vfuel*ts[-1]
+totalTime+=ts[-1]
 
 
+plt.plot(Y[:,0],Y[:,2],linewidth=3)
+plt.axis('equal')
+plt.plot(xc,yc,linewidth=2)
+
+plt.grid(True)
+plt.show()
+
+print('Высота =',H, 'Vx =', Vx, 'Vy =', Vy)
+print('Время =',totalTime)
+print('Топливо =',Ship_fuelMass)
+
+
+xc,yc=[],[]
+for i in range(0, 630):
+    xc.append(Re*m.cos(i/100))
+    yc.append(Re*m.sin(i/100))
 
 y0,t0=[Y[-1:,0],Y[-1:,1],Y[-1:,2],Y[-1:,3]], 0
 ODE=ode(f)
