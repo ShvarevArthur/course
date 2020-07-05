@@ -7,12 +7,26 @@ h=0
 Re=6371000
 G=6.67e-11
 Me=5.97e24
-coeff_Cx=0.1 #В описанни же стоит аэродинамический коэффициент или нет?
+coeff_Cx=0.1 
 totalTime=0
 
 S3_Diametr=6.6
-TotalMass=5500 #нужно учесть всю массу!
-V0=0
+
+Mass_KO=5500
+Mass_CM=22500
+Mass_LM=15000
+Mass_RC=2723700
+Mass_LK=Mass_KO+Mass_CM
+TotalMass=Mass_LK+Mass_LM+Mass_RC
+
+fuelMass1=2010000
+fuelMass2=421100
+fuelMass3=108000
+Ship_fuelMass=fuelMass1+fuelMass2+fuelMass3
+
+Ship_Vfuel=4130
+Ship_Force=4130*120
+
 angle=0
 
 def fout(t, y):# обработчик шага 
@@ -97,6 +111,7 @@ H=m.sqrt(Y[-1:,0]*Y[-1:,0] +Y[-1:,2]*Y[-1:,2])-Re
 Vx=Y[-1:,1]
 Vy=Y[-1:,3]
 V0=m.sqrt(G*Me/(Re+H)) # Орбитальная скорость
+Ship_fuelMass-=Ship_Force/Ship_Vfuel*ts[-1]
 
 plt.plot(Y[:,0],Y[:,2],linewidth=3)
 plt.axis('equal')
@@ -106,4 +121,5 @@ plt.grid(True)
 plt.show()
 
 print('Высота =',H, 'Vx =', Vx, 'Vy =', Vy)
-print('Время =',ts[-1]);
+print('Время =',ts[-1])
+print('Топливо =',Ship_fuelMass, 'Отделилась 3ая ступень')
